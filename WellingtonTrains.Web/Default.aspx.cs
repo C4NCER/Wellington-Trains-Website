@@ -11,102 +11,87 @@ namespace WellingtonTrains.Web
 
 	public partial class Default : System.Web.UI.Page
 	{
-		public void button1Clicked (object sender, EventArgs args)
+		public void buttonLookupClicked(object sender, EventArgs args)
 		{
-			button1.Text = "You clicked me";
+			lookup();
 		}
 
-		public void buttonLookupClicked (object sender, EventArgs args)
+		public void buttonSwapClicked(object sender, EventArgs args)
 		{
-//			TextBox1.Text = DropDownListFrom.SelectedItem.Value;
-			lookup ();
-		}
-
-		public void buttonSwapClicked (object sender, EventArgs args)
-		{
-//			swapDirection ();
 			ButtonSwap.Text = "trololol not working yet";
 		}
 
 		DataProvider dataProvider;
 		private bool swapping = false;
 
-		protected void Page_Load (object sender, EventArgs e)
+		protected void Page_Load(object sender, EventArgs e)
 		{
-            dataProvider = new DataProvider(XDocument.Load("Resources/xml/Lines.xml"), XDocument.Load("Resources/xml/Stations.xml"), XDocument.Load("Resources/xml/StationLines.xml"));
+			dataProvider = new DataProvider(XDocument.Load("Resources/xml/Lines.xml"), XDocument.Load("Resources/xml/Stations.xml"), XDocument.Load("Resources/xml/StationLines.xml"));
 
-			SetUpLine ();
-			SetUpStationFrom ();
-			SetUpStationTo ();
+			SetUpLine();
+			SetUpStationFrom();
+			SetUpStationTo();
 		}
 
-		private void SetUpLine ()
+		private void SetUpLine()
 		{		
-			List<LineClass> lines = (List<LineClass>)dataProvider.GetLines ();
+			List<LineClass> lines = (List<LineClass>)dataProvider.GetLines();
 
-			this.DropDownListLines.Items.Clear ();
+			this.DropDownListLines.Items.Clear();
 
 			foreach (LineClass line in lines)
-				this.DropDownListLines.Items.Add (new ListItem (line.Name, line.Id));
+				this.DropDownListLines.Items.Add(new ListItem(line.Name, line.Id));
 
-			this.DropDownListLines.DataBind ();       
-//
-//			if(loading)
-			DropDownListFrom.SelectedIndexChanged += new EventHandler (dropDownListLine_ItemSelected);
+			this.DropDownListLines.DataBind(); 
 		}
 
-		private void SetUpStationFrom ()
+		private void SetUpStationFrom()
 		{		
-			List<StationClass> stations = (List<StationClass>)dataProvider.GetStationsForLine (DropDownListLines.SelectedItem.Text);
+			List<StationClass> stations = (List<StationClass>)dataProvider.GetStationsForLine(DropDownListLines.SelectedItem.Text);
 
-			this.DropDownListFrom.Items.Clear ();
+			this.DropDownListFrom.Items.Clear();
 
 			foreach (StationClass station in stations)
-				this.DropDownListFrom.Items.Add (new ListItem (station.Name, station.Id));
+				this.DropDownListFrom.Items.Add(new ListItem(station.Name, station.Id));
 
-			this.DropDownListFrom.DataBind ();
-
-
-
-			DropDownListFrom.SelectedIndexChanged += new EventHandler (dropDownListFrom_ItemSelected);
+			this.DropDownListFrom.DataBind();
 		}
 
-		private void SetUpStationTo ()
+		private void SetUpStationTo()
 		{
-//			List<StationClass> stations = (List<StationClass>)dataProvider.GetOtherStationsForLine (DropDownListLines.SelectedItem.Text, DropDownListFrom.SelectedItem.Text);
-			List<StationClass> stations = (List<StationClass>)dataProvider.GetStationsForLine (DropDownListLines.SelectedItem.Text);
+			List<StationClass> stations = (List<StationClass>)dataProvider.GetStationsForLine(DropDownListLines.SelectedItem.Text);
 
-			this.DropDownListTo.Items.Clear ();
+			this.DropDownListTo.Items.Clear();
 
 			foreach (StationClass station in stations)
-				this.DropDownListTo.Items.Add (new ListItem (station.Name, station.Id));
+				this.DropDownListTo.Items.Add(new ListItem(station.Name, station.Id));
 
 			this.DropDownListTo.SelectedIndex += 1;
 
-			this.DropDownListTo.DataBind ();
+			this.DropDownListTo.DataBind();
 
 		}
 
-		void dropDownListLine_ItemSelected (object sender, EventArgs e)
+		void dropDownListLine_ItemSelected(object sender, EventArgs e)
 		{
-			if (!swapping)
-				SetUpStationFrom ();
+			if(!swapping)
+				SetUpStationFrom();
 		}
 
-		void dropDownListFrom_ItemSelected (object sender, EventArgs e)
+		void dropDownListFrom_ItemSelected(object sender, EventArgs e)
 		{
-			if (!swapping)
-				SetUpStationTo ();
+			if(!swapping)
+				SetUpStationTo();
 			swapping = false;
 		}
 
-		void swapDirection ()
+		void swapDirection()
 		{
 			swapping = true;
 			int to = DropDownListFrom.SelectedIndex;
 			int from = DropDownListTo.SelectedIndex;
 
-			DropDownList temp = new DropDownList ();
+			DropDownList temp = new DropDownList();
 			temp.DataSource = DropDownListFrom.DataSource;
 			DropDownListFrom.DataSource = DropDownListTo.DataSource;
 			DropDownListTo.DataSource = temp.DataSource;
@@ -117,29 +102,35 @@ namespace WellingtonTrains.Web
 
 			DropDownListFrom.SelectedIndex = from;
 			DropDownListTo.SelectedIndex = to;
-			DropDownListFrom.DataBind ();
-			DropDownListTo.DataBind ();
+			DropDownListFrom.DataBind();
+			DropDownListTo.DataBind();
 
 		}
 
-		void lookup ()
+		void lookup()
 		{
 
-			Trip.Line = dataProvider.GetLineClassFromName (DropDownListLines.SelectedItem.ToString ());
-			Trip.From = dataProvider.GetStationClassFromName (DropDownListFrom.SelectedItem.ToString ());
-			Trip.To = dataProvider.GetStationClassFromName (DropDownListTo.SelectedItem.ToString ());
+			Trip.Line = dataProvider.GetLineClassFromName(DropDownListLines.SelectedItem.ToString());
+			Trip.From = dataProvider.GetStationClassFromName(DropDownListFrom.SelectedItem.ToString());
+			Trip.To = dataProvider.GetStationClassFromName(DropDownListTo.SelectedItem.ToString());
+			Trip.Day = Convert.ToInt16(DropDownListDay.SelectedValue);
 
-			DataGetter dataGetter = new DataGetter ();
-//				RunOnUiThread(delegate { 
-//					StartActivity(typeof(TimetableList));
-//				});
-			Literal1.Text += dataGetter.Depart.Count;
+			DataGetter dataGetter = new DataGetter();
+
 			List<DateTime> departs = dataGetter.Depart;
 			List<DateTime> arrives = dataGetter.Arrive;
-			for (int i = 0; i < departs.Count; i++) {
-				Literal1.Text += departs[i] + " " + arrives[i] + "<br/>";
+
+			if(departs.Count == 0)
+				LiteralTimeTable.Text = "No Trains Found";
+			else {
+				LiteralTimeTable.Text = "";
+
+				for (int i = 0; i < departs.Count; i++) {
+					if(Trip.Day > 0 || (Trip.Day == 0 && departs [i] > DateTime.Now)) {
+						LiteralTimeTable.Text += departs [i].ToShortTimeString() + " " + arrives [i].ToShortTimeString() + "\n<br/>";
+					}
+				}
 			}
 		}
 	}
 }
-

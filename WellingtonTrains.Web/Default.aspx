@@ -7,8 +7,11 @@
 <body>
 	<form id="form1" runat="server">
 		<asp:DropDownList ID="DropDownListLines" runat="server" />
+		<br/>
 		<asp:DropDownList ID="DropDownListFrom" runat="server" />
+		<br/>
 		<asp:DropDownList ID="DropDownListTo" runat="server" />
+		<br/>
 		<asp:DropDownList ID="DropDownListDay" runat="server" >
 			<asp:ListItem Selected="True" Value="0">Today</asp:ListItem>
 			<asp:ListItem Value="1">Monday</asp:ListItem>
@@ -19,11 +22,12 @@
 			<asp:ListItem Value="6">Saturday</asp:ListItem>
 			<asp:ListItem Value="7">Sunday</asp:ListItem>
 		</asp:DropDownList>
+		<br/>
 		<asp:Button ID="ButtonLookup" runat="server" Text="Find Trains" OnClick="buttonLookupClicked" />
-		<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-		<asp:Button id="button1" runat="server" Text="Click me!" OnClick="button1Clicked" />
+		<br/>
 		<asp:Button id="ButtonSwap" runat="server" Text="Swap Direction" OnClick="buttonSwapClicked" />
-		<asp:Literal ID="Literal1" runat="server" />
+		<br/>
+		<asp:Literal ID="LiteralTimeTable" runat="server" />
 	</form>
 </body>
 </html>
