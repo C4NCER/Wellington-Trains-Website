@@ -36,11 +36,8 @@ namespace WellingtonTrains.Web
 			}
 		}
 
-		private DateTime the_past;
-
 		public DataGetter()
 		{
-			the_past = stringToDate("1984/09/02 12:34 pm");
 			depart = new List<DateTime>();
 			arrive = new List<DateTime>();
 			GoGoGadget();
@@ -60,21 +57,19 @@ namespace WellingtonTrains.Web
 		void webClient_DownloadDataCompleted(String result)
 		{
 			string the_page = result;
-			if(the_page.IndexOf("This timetable is valid for ") > 0) {
-				the_page = the_page.Substring(the_page.IndexOf("This timetable is valid for "));
-				the_page = the_page.Substring(the_page.IndexOf(">") + 1);
+			if(the_page.IndexOf("td class=\"stop") > 0) {
+				the_page = the_page.Substring(the_page.IndexOf("td class=\"stop"));
 			} else if(the_page.IndexOf("This service does not have a timetable for ") > 0) {
 				the_page = the_page.Substring(the_page.IndexOf("This service does not have a timetable for ") + "This service does not have a timetable for ".Length);
 			}
-			the_page = the_page.Substring(the_page.IndexOf(" ") + 1);
 
 			// hack off the footer div
 			int index = the_page.LastIndexOf(@"<div id=");
 			the_page = the_page.Substring(0, index - 8);
 
 			// get the time table div
-			index = the_page.LastIndexOf(@"<div id=");
-			the_page = the_page.Substring(index);
+//			index = the_page.LastIndexOf(@"<div id=");
+//			the_page = the_page.Substring(index);
 
 			List<String> bfgds = getTimeTableRows(the_page);
 			foreach (String timeTableRow in bfgds) {
@@ -82,6 +77,8 @@ namespace WellingtonTrains.Web
 					depart = getTrainTimes(timeTableRow, depart, Trip.Day);
 				else if(timeTableRow.IndexOf("name=\"" + Trip.To.Id + "\"") != -1)
 					arrive = getTrainTimes(timeTableRow, arrive, Trip.Day);
+				depart.Sort();
+				arrive.Sort();
 			}
 		}
 
@@ -100,9 +97,6 @@ namespace WellingtonTrains.Web
 					DateTime time = stringToDate(DateTime.Now.AddDays(day).ToString("yyyy/MM/dd") + " " + span.Value);
 					if(list.IndexOf(time) == -1)
 						list.Add(time);
-				}
-				if(list.Count == count) {
-					list.Add(the_past);
 				}
 			}
 			return list;

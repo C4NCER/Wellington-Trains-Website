@@ -6,7 +6,13 @@
 </head>
 <body>
 	<form id="form1" runat="server">
-		<asp:DropDownList ID="DropDownListLines" runat="server" />
+		<asp:DropDownList ID="DropDownListLines" runat="server" onchange="setupStations()" >
+			<asp:ListItem Selected="True" Value="JVL">Johnsonville</asp:ListItem>
+			<asp:ListItem Value="KPL">Kapiti</asp:ListItem>
+			<asp:ListItem Value="HVL">Hutt Valley</asp:ListItem>
+			<asp:ListItem Value="MEL">Melling</asp:ListItem>
+			<asp:ListItem Value="WRL">Wairarapa</asp:ListItem>
+		</asp:DropDownList>
 		<br/>
 		<asp:DropDownList ID="DropDownListFrom" runat="server" />
 		<br/>
@@ -25,9 +31,21 @@
 		<br/>
 		<asp:Button ID="ButtonLookup" runat="server" Text="Find Trains" OnClick="buttonLookupClicked" />
 		<br/>
-		<asp:Button id="ButtonSwap" runat="server" Text="Swap Direction" OnClick="buttonSwapClicked" />
-		<br/>
-		<asp:Literal ID="LiteralTimeTable" runat="server" />
+	  <asp:HiddenField id="lineSelection" runat="server" />
+		<asp:HiddenField id="fromSelection" runat="server" />
+		<asp:HiddenField id="toSelection" runat="server" />
 	</form>
+	<button id="ButtonSwap" OnClick="swapDirections()">Swap Direction</button>
+	<table>
+		<tr>
+		<th>Depart</th>
+		<th>Arrive</th>
+		</tr>
+		<tr>
+			<td><asp:Literal ID="LiteralDepart" runat="server" /></td>
+			<td><asp:Literal ID="LiteralArrive" runat="server" /></td>
+		</tr>
+	</table>
+	<script src="./TotesAwesJs.js"></script>
 </body>
 </html>
