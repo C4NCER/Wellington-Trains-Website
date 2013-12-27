@@ -65,6 +65,6 @@
 	  ga('send', 'pageview');
 
 	</script>
-	<script src="./TotesAwesJs.js"></script>
+	<script src="Scripts/TotesAwesJs.js"></script>
 </body>
 </html>
