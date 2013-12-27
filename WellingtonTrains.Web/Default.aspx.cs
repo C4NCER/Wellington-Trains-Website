@@ -39,17 +39,38 @@ namespace WellingtonTrains.Web
 			List<DateTime> departs = dataGetter.Depart;
 			List<DateTime> arrives = dataGetter.Arrive;
 
-			if(departs.Count == 0 || arrives.Count == 0) {
-				LiteralDepart.Text = "No Trains Found";
-				LiteralArrive.Text = "";
+			TableTimes.Rows.Clear ();
+			TableHeaderRow hRow = new TableHeaderRow ();
+			TableTimes.Rows.Add (hRow);
+
+			if (departs.Count == 0 || arrives.Count == 0) {
+				TableHeaderCell cell = new TableHeaderCell ();
+				cell.Text = "No Trains Found";
+				cell.CssClass = "text-center";
+				hRow.Cells.Add (cell);
+				hRow.CssClass = "danger";
 			} else {
-				LiteralDepart.Text = "";
-				LiteralArrive.Text = "";
+				TableHeaderCell departHeaderCell = new TableHeaderCell ();
+				departHeaderCell.Text = "Depart";
+				departHeaderCell.CssClass = "text-center";
+				hRow.Cells.Add (departHeaderCell);
+				TableHeaderCell arriveHeaderCell = new TableHeaderCell ();
+				arriveHeaderCell.Text = "Arrive";
+				arriveHeaderCell.CssClass = "text-center";
+				hRow.Cells.Add (arriveHeaderCell);
 
 				for (int i = 0; i < departs.Count && i < arrives.Count; i++) {
-					if(Trip.Day > 0 || (Trip.Day == 0 && departs [i] > DateTime.Now)) {
-						LiteralDepart.Text += departs [i].ToShortTimeString() + "\n<br/>";
-						LiteralArrive.Text += arrives [i].ToShortTimeString() + "\n<br/>";
+					if (Trip.Day > 0 || (Trip.Day == 0 && departs [i] > DateTime.Now)) {
+						TableCell departCell = new TableCell ();
+						departCell.Text = departs [i].ToShortTimeString ();
+						departCell.CssClass = "text-center";
+						TableCell arriveCell = new TableCell ();
+						arriveCell.Text = arrives [i].ToShortTimeString ();
+						arriveCell.CssClass = "text-center";
+						TableRow row = new TableRow ();
+						row.Cells.Add (departCell);
+						row.Cells.Add (arriveCell);
+						TableTimes.Rows.Add (row);
 					}
 				}
 			}
