@@ -67,19 +67,28 @@ namespace WellingtonTrains.Web
 			int index = the_page.LastIndexOf(@"<div id=");
 			the_page = the_page.Substring(0, index - 8);
 
-			// get the time table div
-//			index = the_page.LastIndexOf(@"<div id=");
-//			the_page = the_page.Substring(index);
-
 			List<String> bfgds = getTimeTableRows(the_page);
+			List<String> departs = new List<String>();
+			List<String> arrives = new List<String>();
 			foreach (String timeTableRow in bfgds) {
 				if(timeTableRow.IndexOf("name=\"" + Trip.From.Id + "\"") != -1)
-					depart = getTrainTimes(timeTableRow, depart, Trip.Day);
+					departs.AddRange(getTableCells(timeTableRow));
 				else if(timeTableRow.IndexOf("name=\"" + Trip.To.Id + "\"") != -1)
-					arrive = getTrainTimes(timeTableRow, arrive, Trip.Day);
-				depart.Sort();
-				arrive.Sort();
+					arrives.AddRange(getTableCells(timeTableRow));
 			}
+
+			getTrainTimes(departs);
+			getTrainTimes(arrives);
+
+			for (int i = 0; i < arrives.Count; i++) {
+				if(arrives [i] != "" && departs [i] != "") {
+					depart.Add(stringToDate(departs [i]));
+					arrive.Add(stringToDate(arrives [i]));
+				}
+			}
+
+			depart.Sort();
+			arrive.Sort();
 		}
 
 		private List<String> getTimeTableRows(string HTML)
@@ -87,16 +96,23 @@ namespace WellingtonTrains.Web
 			return new List<string>(Regex.Split(HTML, "<tr.*?timing"));
 		}
 
-		private List<DateTime> getTrainTimes(string HTML, List<DateTime> list, int day)
+		private List<String> getTableCells(string HTML)
 		{
-			MatchCollection herp = Regex.Matches(HTML, "\\<td.*\\/td>");
+			List<String> list = new List<string>();
+			MatchCollection herp = Regex.Matches(HTML, "\\<td.*?\\/td>");
 			foreach (Match derp in herp) {
-				MatchCollection spans = Regex.Matches(derp.Value, "\\d{1,2}:\\d{2} (a|p)m");
-				int count = list.Count;
+				list.Add(derp.Value);
+			}
+			return list;
+		}
+
+		private List<String> getTrainTimes(List<String> list)
+		{
+			for (int i = 0; i < list.Count; i++) {
+				MatchCollection spans = Regex.Matches(list [i], "\\d{1,2}:\\d{2} (a|p)m");
+				list [i] = "";
 				foreach (Match span in spans) {
-					DateTime time = stringToDate(DateTime.Now.AddDays(day).ToString("yyyy/MM/dd") + " " + span.Value);
-					if(list.IndexOf(time) == -1)
-						list.Add(time);
+					list [i] += DateTime.Now.AddDays(Trip.Day).ToString("yyyy/MM/dd") + " " + span.Value;
 				}
 			}
 			return list;
@@ -104,6 +120,7 @@ namespace WellingtonTrains.Web
 
 		private DateTime stringToDate(string dateAsString)
 		{
+			System.Diagnostics.Debug.Print("dateAsString = '" + dateAsString + "'");
 			char[] delimiters = new char[] { '/', ':', ' ' };
 			string[] parts = dateAsString.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 			DateTime date = new DateTime(int.Parse(parts [0]), int.Parse(parts [1]), int.Parse(parts [2]), parts [5] == "am" ? int.Parse(parts [3]) % 12 : parts [3] == "12" ? 12 : int.Parse(parts [3]) + 12, int.Parse(parts [4]), 0);
