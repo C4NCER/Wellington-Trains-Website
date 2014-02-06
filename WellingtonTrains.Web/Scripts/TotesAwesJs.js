@@ -1,6 +1,7 @@
 ﻿var linesList = document.getElementById("DropDownListLines");
 var fromList = document.getElementById("DropDownListFrom");
 var toList = document.getElementById("DropDownListTo");
+var dayList = document.getElementById("DropDownListDay");
 
 var stationLines = [
     { station: "WELL", line: "JVL", value: "Wellington", rank: "1" },
@@ -128,6 +129,12 @@ function findTrains() {
 		for (var i = 0; i < toList.length; i += 1) {
 			if (toList[i].value == test.value) {
 				toList[i].selected = true;
+			}
+		}
+		test = document.getElementById("daySelection");
+		for (var i = 0; i < dayList.length; i += 1) {
+			if (dayList[i].value == test.value) {
+				dayList[i].selected = true;
 			}
 		}
 })();

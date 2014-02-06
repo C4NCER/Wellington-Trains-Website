@@ -44,10 +44,12 @@
 			<div class="form-group">
 				<button id="ButtonSwap" OnClick="swapDirections()" type="button" class="btn btn-default btn-block">Swap Direction <span class="glyphicon glyphicon-random"></span></button>
 				<asp:LinkButton ID="ButtonLookup" runat="server" OnClick="buttonLookupClicked" CssClass="btn btn-primary btn-block">Find Trains <span class="glyphicon glyphicon-search"></span></asp:LinkButton>
+			  <asp:Literal id="literalLink" runat="server" />
 			</div>
 			<asp:HiddenField id="lineSelection" runat="server" />
 			<asp:HiddenField id="fromSelection" runat="server" />
 			<asp:HiddenField id="toSelection" runat="server" />
+			<asp:HiddenField id="daySelection" runat="server" />
 			<div class="form-group">
 				<asp:Table runat="server" id="TableTimes" class="table table-condensed table-hover" />
 			</div>

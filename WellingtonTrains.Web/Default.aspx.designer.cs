@@ -33,11 +33,15 @@ namespace WellingtonTrains.Web {
 		
 		protected System.Web.UI.WebControls.LinkButton ButtonLookup;
 		
+		protected System.Web.UI.WebControls.Literal literalLink;
+		
 		protected System.Web.UI.WebControls.HiddenField lineSelection;
 		
 		protected System.Web.UI.WebControls.HiddenField fromSelection;
 		
 		protected System.Web.UI.WebControls.HiddenField toSelection;
+		
+		protected System.Web.UI.WebControls.HiddenField daySelection;
 		
 		protected System.Web.UI.WebControls.Table TableTimes;
 	}
