@@ -2,28 +2,32 @@
 
 namespace WellingtonTrains.Web
 {
+
 	public class Trip
 	{
 		private static Trip instance;
+
 		public static LineClass Line { get; set; }
+
 		public static StationClass From { get; set; }
+
 		public static StationClass To { get; set; }
+
 		public static int Day { get; set; }
-		public static String Direction { get { return From.Rank > To.Rank ? "Inbound" : "Outbound"; } }
 
-		private Trip() { }
+		public static String Direction { get { return From.Rank > To.Rank ? "inbound" : "outbound"; } }
 
-		public static Trip Instance
+		private Trip()
 		{
-			get
-			{
-				if (instance == null)
-				{
+		}
+
+		public static Trip Instance {
+			get {
+				if(instance == null) {
 					instance = new Trip();
 				}
 				return instance;
 			}
 		}
-
 	}
 }
