@@ -64,6 +64,7 @@
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 	  ga('create', 'UA-46462711-1', 'omuch.info');
+	  ga('require', 'displayfeatures');
 	  ga('send', 'pageview');
 
 	</script>
