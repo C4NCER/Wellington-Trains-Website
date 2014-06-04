@@ -3,7 +3,7 @@
 <html>
 <head runat="server">
 	<title>Choo Choo</title>
-	<link href="content/bootstrap.css" rel="stylesheet" type="text/css" />
+	<link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </head>
 <body>
