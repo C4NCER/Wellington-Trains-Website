@@ -4,3 +4,6 @@
 *.userprefs
 *.user
 *.designer.cs
+packages/bootstrap.3.0.3
+packages/jQuery.2.0.3
+packages/Twitter.Bootstrap.3.0.1.1
