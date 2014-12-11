@@ -48,6 +48,17 @@ namespace WellingtonTrains.Web
 				if(Request.Params ["day"] != "") {
 					daySelection.Value = Request.Params ["day"];
 				}	
+				if(lineSelection.Value == Request.Params ["line"] && fromSelection.Value == Request.Params ["from"] && toSelection.Value == Request.Params ["to"] && daySelection.Value == Request.Params ["day"]) {
+					Trip.From = dataProvider.GetStationClassFromID(fromSelection.Value);
+					Trip.To = dataProvider.GetStationClassFromID(toSelection.Value);
+					Trip.Line = dataProvider.GetLineClassFromID(lineSelection.Value);
+					Trip.Day = Convert.ToInt16(daySelection.Value);
+
+					String bookmarkURL = "./?line=" + Trip.Line.Id + "&from=" + Trip.From.Id + "&to=" + Trip.To.Id + "&day=" + Trip.Day;
+					literalLink.Text = "<a href=" + bookmarkURL + " class=\"btn btn-default btn-block\" >Permanent Link to this Timetable</a>";
+
+					lookup();
+				}
 			}
 		}
 
