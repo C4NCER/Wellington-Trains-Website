@@ -47,46 +47,72 @@ namespace WellingtonTrains.Web
 		{
 			var webClient = new WebClient();
 
-			string url = "http://www.metlink.org.nz/timetables/train/" + Trip.Line.Id + "/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
+			string url;
 
-			webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
-			string result = webClient.DownloadString(new Uri(url));
-			webClient_DownloadDataCompleted(result);
+			string[] results;
+
+			if(Trip.To.Name == "Petone" || Trip.To.Name == "Ngauranga") {
+				results = new string[2];
+				url = "http://www.metlink.org.nz/timetables/train/HVL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
+				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
+				results [0] = webClient.DownloadString(new Uri(url));
+
+				url = "http://www.metlink.org.nz/timetables/train/MEL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
+				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
+				results [1] = webClient.DownloadString(new Uri(url));
+			} else if(Trip.To.Name == "Waterloo" || Trip.To.Name == "Upper Hutt") {
+				results = new string[2];
+				url = "http://www.metlink.org.nz/timetables/train/HVL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
+				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
+				results [0] = webClient.DownloadString(new Uri(url));
+
+				url = "http://www.metlink.org.nz/timetables/train/WRL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
+				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
+				results [1] = webClient.DownloadString(new Uri(url));
+			} else {
+				results = new string[1];
+				url = "http://www.metlink.org.nz/timetables/train/" + Trip.Line.Id + "/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
+				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
+				results [0] = webClient.DownloadString(new Uri(url));
+			}
+			webClient_DownloadDataCompleted(results);
 		}
 
-		void webClient_DownloadDataCompleted(String result)
+		void webClient_DownloadDataCompleted(String[] results)
 		{
-			string the_page = result;
-			if(the_page.IndexOf("td class=\"stop") > 0) {
-				the_page = the_page.Substring(the_page.IndexOf("td class=\"stop"));
-			} else if(the_page.IndexOf("This service does not have a timetable for ") > 0) {
-				the_page = the_page.Substring(the_page.IndexOf("This service does not have a timetable for ") + "This service does not have a timetable for ".Length);
-			}
+			string the_page;
+			foreach (string result in results) {
+				the_page = result;
+				if(the_page.IndexOf("td class=\"stop") > 0) {
+					the_page = the_page.Substring(the_page.IndexOf("td class=\"stop"));
+				} else if(the_page.IndexOf("This service does not have a timetable for ") > 0) {
+					the_page = the_page.Substring(the_page.IndexOf("This service does not have a timetable for ") + "This service does not have a timetable for ".Length);
+				}
 
-			// hack off the footer div
-			int index = the_page.LastIndexOf(@"<div id=");
-			the_page = the_page.Substring(0, index - 8);
+				// hack off the footer div
+				int index = the_page.LastIndexOf(@"<div id=");
+				the_page = the_page.Substring(0, index - 8);
 
-			List<String> bfgds = getTimeTableRows(the_page);
-			List<String> departs = new List<String>();
-			List<String> arrives = new List<String>();
-			foreach (String timeTableRow in bfgds) {
-				if(timeTableRow.IndexOf("name=\"" + Trip.From.Id + "\"") != -1)
-					departs.AddRange(getTableCells(timeTableRow));
-				else if(timeTableRow.IndexOf("name=\"" + Trip.To.Id + "\"") != -1)
-					arrives.AddRange(getTableCells(timeTableRow));
-			}
+				List<String> bfgds = getTimeTableRows(the_page);
+				List<String> departs = new List<String>();
+				List<String> arrives = new List<String>();
+				foreach (String timeTableRow in bfgds) {
+					if(timeTableRow.IndexOf("name=\"" + Trip.From.Id + "\"") != -1)
+						departs.AddRange(getTableCells(timeTableRow));
+					else if(timeTableRow.IndexOf("name=\"" + Trip.To.Id + "\"") != -1)
+						arrives.AddRange(getTableCells(timeTableRow));
+				}
 
-			getTrainTimes(departs);
-			getTrainTimes(arrives);
+				getTrainTimes(departs);
+				getTrainTimes(arrives);
 
-			for (int i = 0; i < arrives.Count; i++) {
-				if(arrives [i] != "" && departs [i] != "") {
-					depart.Add(stringToDate(departs [i]));
-					arrive.Add(stringToDate(arrives [i]));
+				for (int i = 0; i < arrives.Count; i++) {
+					if(arrives [i] != "" && departs [i] != "") {
+						depart.Add(stringToDate(departs [i]));
+						arrive.Add(stringToDate(arrives [i]));
+					}
 				}
 			}
-
 			depart.Sort();
 			arrive.Sort();
 		}
@@ -120,7 +146,6 @@ namespace WellingtonTrains.Web
 
 		private DateTime stringToDate(string dateAsString)
 		{
-			System.Diagnostics.Debug.Print("dateAsString = '" + dateAsString + "'");
 			char[] delimiters = new char[] { '/', ':', ' ' };
 			string[] parts = dateAsString.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 			DateTime date = new DateTime(int.Parse(parts [0]), int.Parse(parts [1]), int.Parse(parts [2]), parts [5] == "am" ? int.Parse(parts [3]) % 12 : parts [3] == "12" ? 12 : int.Parse(parts [3]) + 12, int.Parse(parts [4]), 0);
