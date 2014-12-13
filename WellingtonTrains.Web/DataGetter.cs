@@ -51,7 +51,7 @@ namespace WellingtonTrains.Web
 
 			string[] results;
 
-			if(Trip.To.Name == "Petone" || Trip.To.Name == "Ngauranga") {
+			if(Trip.To.Name == "Petone" || Trip.To.Name == "Ngauranga" || Trip.From.Name == "Petone" || Trip.From.Name == "Ngauranga") {
 				results = new string[2];
 				url = "http://www.metlink.org.nz/timetables/train/HVL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
 				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
@@ -60,7 +60,7 @@ namespace WellingtonTrains.Web
 				url = "http://www.metlink.org.nz/timetables/train/MEL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
 				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
 				results [1] = webClient.DownloadString(new Uri(url));
-			} else if(Trip.To.Name == "Waterloo" || Trip.To.Name == "Upper Hutt") {
+			} else if(Trip.To.Name == "Waterloo" || Trip.To.Name == "Upper Hutt" || Trip.From.Name == "Waterloo" || Trip.From.Name == "Upper Hutt") {
 				results = new string[2];
 				url = "http://www.metlink.org.nz/timetables/train/HVL/" + Trip.Direction + "/" + "?date=" + DateTime.Today.AddDays((double)Trip.Day).ToString("M/d/yyyy") + "&allStops=1";
 				webClient.Headers ["User-Agent"] = "Mozilla/4.0 (Compatible; Windows NT 5.1; MSIE 6.0) (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
