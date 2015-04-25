@@ -28,7 +28,7 @@ namespace WellingtonTrains.Web
 
 		protected void Page_Load(object sender, EventArgs e)
 		{
-			dataProvider = new DataProvider(XDocument.Load("Resources/xml/Lines.xml"), XDocument.Load("Resources/xml/Stations.xml"), XDocument.Load("Resources/xml/StationLines.xml"));
+			dataProvider = new DataProvider(XDocument.Load("http://trains.t.o.omuch.info/Resources/xml/Lines.xml"), XDocument.Load("http://trains.t.o.omuch.info/Resources/xml/Stations.xml"), XDocument.Load("http://trains.t.o.omuch.info/Resources/xml/StationLines.xml"));
 
 			lineSelection.Value = Request.Form ["DropDownListLines"];
 			fromSelection.Value = Request.Form ["DropDownListFrom"];
